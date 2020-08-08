@@ -1,5 +1,5 @@
 # Sample readme
 
-This is a repo for Language Trainer
+## This is a repo for Language Trainer!
 
 
