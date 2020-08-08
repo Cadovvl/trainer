@@ -1,0 +1,20 @@
+<div class="card {{ style }} p-3 mb-2" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      {% load static %}
+      <img src="{% static 'img/icon.png' %}" class="card-img" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ title }}</h5>
+        <p class="card-text">{{ text }}</p>
+        <a href="#" class="btn btn-sm btn-block {{ btn }}">Начать!</a>
+
+        <footer class="blockquote-footer">
+        <p class="card-text"><small class="text-muted">{{ remark }}</small></p>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
