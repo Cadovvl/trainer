@@ -2,7 +2,5 @@
 
 ## Subheader
 
-### Sub sub sub 
-
-Text
+## This is a repo for Language Trainer!
 
