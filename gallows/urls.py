@@ -4,6 +4,6 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.start, name="start")
+    path('', views.start, name="gallows_start")
 ]
 
