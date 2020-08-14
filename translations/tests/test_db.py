@@ -1,8 +1,9 @@
 import pytest
 
 from translations.db_adapter import translate, translations
-from translations.models import Word, Translation
+from translations.models import Translation, Word
 
+Lang = Word.Language
 
 @pytest.fixture
 def database():
@@ -29,25 +30,32 @@ def database():
     return words
 
 
-
 @pytest.mark.django_db
 def test_translation(database):
-    assert translate('onion') == 'лук'
-    assert translate('bow') == 'лук'
-    assert translate('лук') == 'onion'
-    assert translate('поклон') is None
-    assert translate('нос') is None
-    assert translate('несуществую') is None
+    assert translate('onion', Lang.RU) == 'лук'
+    assert translate('bow', Lang.RU) == 'лук'
+    assert translate('bow', Lang.EN) is None
+    assert translate('bow', Lang.NO) is None
+    assert translate('лук', Lang.EN) == 'onion'
+    assert translate('лук', Lang.RU) is None
+    assert translate('лук', Lang.NO) is None
+    assert translate('поклон', Lang.EN) is None
+    assert translate('нос', Lang.EN) is None
+    assert translate('несуществую', Lang.EN) is None
 
 
 @pytest.mark.django_db
 def test_translations(database):
-    assert translations('onion') == ['лук']
-    assert translations('bow') == ['лук', 'поклон', 'нос']
-    assert translations('лук') == ['onion', 'bow']
-    assert translations('поклон') == []
-    assert translations('нос') == []
-    assert translations('несуществую') == []
+    assert translations('onion', Lang.RU) == ['лук']
+    assert translations('bow', Lang.RU) == ['лук', 'поклон', 'нос']
+    assert translations('bow', Lang.EN) == []
+    assert translations('bow', Lang.NO) == []
+    assert translations('лук', Lang.EN) == ['onion', 'bow']
+    assert translations('лук', Lang.RU) == []
+    assert translations('лук', Lang.NO) == []
+    assert translations('поклон', Lang.EN) == []
+    assert translations('нос', Lang.EN) == []
+    assert translations('несуществую', Lang.EN) == []
 
 
 
