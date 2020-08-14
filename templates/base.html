@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<main lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</head>
+
+<body>
+    {% include "header.html" %}
+
+    {% block content %}{% endblock content %}
+
+    {% include "footer.html" %}
+</body>
+</main>
