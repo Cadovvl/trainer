@@ -13,7 +13,7 @@ def translate(word: str, lang: Word.Language) -> Optional[str]:
     return None if tr is None else tr.target_word.word
 
 
-def translations(word, lang: Word.Language) -> [str]:
+def translations(word: str, lang: Word.Language) -> [str]:
     tr = Translation.objects.select_related('source_word', 'target_word')\
         .filter(Q(source_word__word=word) & Q(target_word__lang=lang))\
         .order_by('-priority')

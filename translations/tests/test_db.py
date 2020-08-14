@@ -8,11 +8,11 @@ Lang = Word.Language
 @pytest.fixture
 def database():
     Word.objects.bulk_create([
-        Word(word='лук', lang=Word.Language.RU),
-        Word(word='onion', lang=Word.Language.EN),
-        Word(word='bow', lang=Word.Language.EN),
-        Word(word='поклон', lang=Word.Language.RU),
-        Word(word='нос', lang=Word.Language.RU),
+        Word(word='лук', lang=Lang.RU),
+        Word(word='onion', lang=Lang.EN),
+        Word(word='bow', lang=Lang.EN),
+        Word(word='поклон', lang=Lang.RU),
+        Word(word='нос', lang=Lang.RU),
     ])
 
     words = Word.objects.all()
