@@ -1,13 +1,12 @@
 import random
 
-from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models.functions import Length
+from django.shortcuts import get_object_or_404, redirect, render
 
 from translations.models import Word
 
 from .forms import DifficultyForm, GuessForm
 from .models import Game
-
 
 DIFFICULTY_COUNTER = {
     "e": 3,
@@ -32,7 +31,7 @@ def start(request):
         form = DifficultyForm(request.POST)
         if form.is_valid():
             word_to_guess = random.choice(
-                Word.objects.annotate(length=Length('word')).filter(length__gt=3)
+                Word.objects.annotate(length=Length("word")).filter(length__gt=3)
             ).word.lower()
             tried_letters = ""
             word_to_show = mask_word(word_to_guess, tried_letters)
@@ -46,7 +45,9 @@ def start(request):
             )
             game.save()
             form = DifficultyForm()
-            return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
+            return render(
+                request, "gallows/gallows_game.html", {"form": form, "game": game}
+            )
         return render(request, "gallows/gallows_start.html", {"form": form})
     form = DifficultyForm()
     return render(request, "gallows/gallows_start.html", {"form": form})
@@ -62,18 +63,22 @@ def game(request, game_id):
             game.tried_letters = "".join(set(game.tried_letters + game.current_guess))
             game.word_to_show = mask_word(game.word_to_guess, game.tried_letters)
             game.counter -= 1
-            
-            if '*' not in game.word_to_show:
+
+            if "*" not in game.word_to_show:
                 game.delete()
                 return render(request, "gallows/gallows_win.html")
-                
+
             if game.counter == 0:
                 game.delete()
                 return render(request, "gallows/gallows_gameover.html")
 
             game.save()
             form = GuessForm()
-            return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
-        return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
+            return render(
+                request, "gallows/gallows_game.html", {"form": form, "game": game}
+            )
+        return render(
+            request, "gallows/gallows_game.html", {"form": form, "game": game}
+        )
     form = GuessForm()
     return render(request, "gallows/gallows_game.html", {"form": form, "game": game})

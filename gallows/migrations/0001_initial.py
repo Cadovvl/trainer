@@ -7,20 +7,43 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('word_to_guess', models.CharField(max_length=20)),
-                ('word_to_show', models.CharField(blank=True, max_length=20, null=True)),
-                ('difficulty', models.CharField(choices=[('e', 'Easy'), ('n', 'Normal'), ('h', 'Hard')], max_length=10, verbose_name='Выберите уровень сложности')),
-                ('counter', models.IntegerField(blank=True, null=True)),
-                ('tried_letters', models.CharField(blank=True, max_length=40, null=True)),
-                ('current_guess', models.CharField(blank=True, max_length=1, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("word_to_guess", models.CharField(max_length=20)),
+                (
+                    "word_to_show",
+                    models.CharField(blank=True, max_length=20, null=True),
+                ),
+                (
+                    "difficulty",
+                    models.CharField(
+                        choices=[("e", "Easy"), ("n", "Normal"), ("h", "Hard")],
+                        max_length=10,
+                        verbose_name="Выберите уровень сложности",
+                    ),
+                ),
+                ("counter", models.IntegerField(blank=True, null=True)),
+                (
+                    "tried_letters",
+                    models.CharField(blank=True, max_length=40, null=True),
+                ),
+                (
+                    "current_guess",
+                    models.CharField(blank=True, max_length=1, null=True),
+                ),
             ],
         ),
     ]

@@ -6,16 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gallows', '0004_auto_20200815_0904'),
+        ("gallows", "0004_auto_20200815_0904"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='game',
-            name='current_guess',
-        ),
-        migrations.RemoveField(
-            model_name='game',
-            name='difficulty',
-        ),
+        migrations.RemoveField(model_name="game", name="current_guess",),
+        migrations.RemoveField(model_name="game", name="difficulty",),
     ]
