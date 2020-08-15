@@ -2,11 +2,10 @@ import random
 
 from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models.functions import Length
-from django.urls import reverse
 
 from translations.models import Word
 
-from .forms import GameForm
+from .forms import DifficultyForm, GuessForm
 from .models import Game
 
 
@@ -30,7 +29,7 @@ def mask_word(word, tried_letters):
 
 def start(request):
     if request.method == "POST":
-        form = GameForm(request.POST)
+        form = DifficultyForm(request.POST)
         if form.is_valid():
             word_to_guess = random.choice(
                 Word.objects.annotate(length=Length('word')).filter(length__gt=3)
@@ -43,37 +42,38 @@ def start(request):
                 word_to_guess=word_to_guess,
                 tried_letters=tried_letters,
                 word_to_show=word_to_show,
-                difficulty=difficulty,
                 counter=counter,
             )
-            game_id = game.game_id
             game.save()
-            game = Game.objects.get(game_id=game_id)
-            form = GameForm(instance=game)
+            form = DifficultyForm()
             return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
         return render(request, "gallows/gallows_start.html", {"form": form})
-    form = GameForm()
+    form = DifficultyForm()
     return render(request, "gallows/gallows_start.html", {"form": form})
 
 
 def game(request, game_id):
     game = get_object_or_404(Game, game_id=game_id)
     if request.method == "POST":
-        form = GameForm(request.POST)
+        form = GuessForm(request.POST)
         if form.is_valid():
-            game.current_guess = form.cleaned_data["current_guess"]
+            current_guess = form.cleaned_data["current_guess"]
+            game.current_guess = current_guess
             game.tried_letters = "".join(set(game.tried_letters + game.current_guess))
             game.word_to_show = mask_word(game.word_to_guess, game.tried_letters)
             game.counter -= 1
-
+            
+            if '*' not in game.word_to_show:
+                game.delete()
+                return render(request, "gallows/gallows_win.html")
+                
             if game.counter == 0:
                 game.delete()
                 return render(request, "gallows/gallows_gameover.html")
 
-            game_id = game.game_id
             game.save()
-            game = Game.objects.get(game_id=game_id)
+            form = GuessForm()
             return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
         return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
-    form = GameForm()
+    form = GuessForm()
     return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
