@@ -1,7 +1,8 @@
 import random
 
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models.functions import Length
+from django.urls import reverse
 
 from translations.models import Word
 
@@ -45,30 +46,34 @@ def start(request):
                 difficulty=difficulty,
                 counter=counter,
             )
+            game_id = game.game_id
+            game.save()
+            game = Game.objects.get(game_id=game_id)
             form = GameForm(instance=game)
-            context = {"form": form, "game": game}
-            return render(request, "gallows/gallows_game.html", context=context)
+            return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
         return render(request, "gallows/gallows_start.html", {"form": form})
     form = GameForm()
     return render(request, "gallows/gallows_start.html", {"form": form})
 
 
-def game(request):
+def game(request, game_id):
+    game = get_object_or_404(Game, game_id=game_id)
     if request.method == "POST":
         form = GameForm(request.POST)
         if form.is_valid():
-            # word_to_guess = ?
-            current_guess = form.cleaned_data["current_guess"]
-            # tried_letters = "".join(set( ? + current_guess))
-            word_to_show = mask_word(word_to_guess, tried_letters)
-            # counter = ?
-            if counter == 0:
+            game.current_guess = form.cleaned_data["current_guess"]
+            game.tried_letters = "".join(set(game.tried_letters + game.current_guess))
+            game.word_to_show = mask_word(game.word_to_guess, game.tried_letters)
+            game.counter -= 1
+
+            if game.counter == 0:
+                game.delete()
                 return render(request, "gallows/gallows_gameover.html")
 
-            context = {
-                "form": form
-            }
-            return render(request, "gallows/gallows_game.html", context=context)
-        return render(request, "gallows/gallows_game.html", {"form": form})
+            game_id = game.game_id
+            game.save()
+            game = Game.objects.get(game_id=game_id)
+            return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
+        return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
     form = GameForm()
-    return render(request, "gallows/gallows_game.html", {"form": form})
+    return render(request, "gallows/gallows_game.html", {"form": form, "game": game})

@@ -12,6 +12,7 @@ class Game(models.Model):
     
     LETTER_CHOICES = [(key, key) for key in string.ascii_lowercase]
 
+    game_id = models.AutoField(primary_key=True)
     word_to_guess = models.CharField(max_length=20) # ForeignKey(Word) ?
     word_to_show = models.CharField("Загаданное слово", max_length=20, blank=True, null=True)
     difficulty = models.CharField("Выберите уровень сложности", max_length=10, choices=DIFFICULTIES)
