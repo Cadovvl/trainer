@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from translations.models import Word
 
-from .forms import DifficultyForm, GuessForm
+from .forms import GuessForm, SettingsForm
 from .models import Game
 
 DIFFICULTY_COUNTER = {
@@ -16,40 +16,38 @@ DIFFICULTY_COUNTER = {
 
 
 def mask_word(word, tried_letters):
-    guess_part = word[1:-1]
-    masked_part = ""
-    for letter in guess_part:
-        if letter not in tried_letters:
-            masked_part += "*"
-        else:
-            masked_part += letter
-    return word[0] + masked_part + word[-1]
+    mask = (
+        word[0]
+        + "".join([letter if letter in tried_letters else "*" for letter in word[1:-1]])
+        + word[-1]
+    )
+    return mask
 
 
 def start(request):
     if request.method == "POST":
-        form = DifficultyForm(request.POST)
+        form = SettingsForm(request.POST)
         if form.is_valid():
+            word_language = form.cleaned_data["language"]
+            difficulty = form.cleaned_data["difficulty"]
             word_to_guess = random.choice(
-                Word.objects.annotate(length=Length("word")).filter(length__gt=3)
+                Word.objects.annotate(length=Length("word"))
+                .filter(length__gt=3)
+                .filter(lang=word_language)
             ).word.lower()
             tried_letters = ""
             word_to_show = mask_word(word_to_guess, tried_letters)
-            difficulty = form.cleaned_data["difficulty"]
             counter = DIFFICULTY_COUNTER[difficulty] * (len(word_to_guess) - 2)
             game = Game.objects.create(
                 word_to_guess=word_to_guess,
                 tried_letters=tried_letters,
-                word_to_show=word_to_show,
                 counter=counter,
             )
             game.save()
-            form = DifficultyForm()
-            return render(
-                request, "gallows/gallows_game.html", {"form": form, "game": game}
-            )
+            context = {"form": form, "game": game, "word": word_to_show}
+            return render(request, "gallows/gallows_game.html", context)
         return render(request, "gallows/gallows_start.html", {"form": form})
-    form = DifficultyForm()
+    form = SettingsForm()
     return render(request, "gallows/gallows_start.html", {"form": form})
 
 
@@ -58,13 +56,12 @@ def game(request, game_id):
     if request.method == "POST":
         form = GuessForm(request.POST)
         if form.is_valid():
-            current_guess = form.cleaned_data["current_guess"]
-            game.current_guess = current_guess
+            game.current_guess = form.cleaned_data["current_guess"]
             game.tried_letters = "".join(set(game.tried_letters + game.current_guess))
-            game.word_to_show = mask_word(game.word_to_guess, game.tried_letters)
+            word_to_show = mask_word(game.word_to_guess, game.tried_letters)
             game.counter -= 1
 
-            if "*" not in game.word_to_show:
+            if "*" not in word_to_show:
                 game.delete()
                 return render(request, "gallows/gallows_win.html")
 
@@ -74,9 +71,8 @@ def game(request, game_id):
 
             game.save()
             form = GuessForm()
-            return render(
-                request, "gallows/gallows_game.html", {"form": form, "game": game}
-            )
+            context = {"form": form, "game": game, "word": word_to_show}
+            return render(request, "gallows/gallows_game.html", context)
         return render(
             request, "gallows/gallows_game.html", {"form": form, "game": game}
         )
