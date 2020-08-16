@@ -2,7 +2,7 @@ import random
 import string
 
 from django.db.models.functions import Length
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from translations.models import Word
 
@@ -49,8 +49,7 @@ def start(request):
                 language=word_language.lower(),
             )
             game.save()
-            context = {"form": form, "game": game, "word": word_to_show}
-            return render(request, "gallows/gallows_game.html", context)
+            return redirect("gallows_game", game_id=game.game_id)
         return render(request, "gallows/gallows_start.html", {"form": form})
     form = SettingsForm()
     return render(request, "gallows/gallows_start.html", {"form": form})
@@ -59,13 +58,17 @@ def start(request):
 def game(request, game_id):
     game = get_object_or_404(Game, game_id=game_id)
     LETTER_CHOICES = CYRILLIC_LETTERS if game.language == "ru" else LATIN_LETTERS
+    word_to_show = mask_word(game.word_to_guess, game.tried_letters)
+    form = GuessForm(LETTER_CHOICES)
+    context = {"form": form, "game": game, "word": word_to_show}
+
     if request.method == "POST":
         form = GuessForm(LETTER_CHOICES, request.POST)
         if form.is_valid():
             game.current_guess = form.cleaned_data["current_guess"]
             game.tried_letters = "".join(set(game.tried_letters + game.current_guess))
-            word_to_show = mask_word(game.word_to_guess, game.tried_letters)
             game.counter -= 1
+            word_to_show = mask_word(game.word_to_guess, game.tried_letters)
 
             if "*" not in word_to_show:
                 game.delete()
@@ -78,8 +81,5 @@ def game(request, game_id):
             game.save()
             context = {"form": form, "game": game, "word": word_to_show}
             return render(request, "gallows/gallows_game.html", context)
-        return render(
-            request, "gallows/gallows_game.html", {"form": form, "game": game}
-        )
-    form = GuessForm(LETTER_CHOICES)
-    return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
+        return render(request, "gallows/gallows_game.html", context)
+    return render(request, "gallows/gallows_game.html", context)
