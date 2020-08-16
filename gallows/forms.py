@@ -1,8 +1,8 @@
-import string
-
 from django import forms
 
 from translations.models import Word
+
+from .models import Game
 
 
 class SettingsForm(forms.Form):
@@ -14,4 +14,8 @@ class SettingsForm(forms.Form):
 
 
 class GuessForm(forms.Form):
-    current_guess = forms.CharField(label="Введите букву", max_length=1)
+    current_guess = forms.ChoiceField(choices=[])
+
+    def __init__(self, choices, *args, **kwargs):
+        super(GuessForm, self).__init__(*args, **kwargs)
+        self.fields["current_guess"].choices = choices

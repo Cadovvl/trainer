@@ -1,7 +1,8 @@
 import random
+import string
 
 from django.db.models.functions import Length
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from translations.models import Word
 
@@ -13,6 +14,9 @@ DIFFICULTY_COUNTER = {
     "n": 2,
     "h": 1,
 }
+
+LATIN_LETTERS = [(key, key) for key in string.ascii_lowercase]
+CYRILLIC_LETTERS = [(key, key) for key in "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"]
 
 
 def mask_word(word, tried_letters):
@@ -42,6 +46,7 @@ def start(request):
                 word_to_guess=word_to_guess,
                 tried_letters=tried_letters,
                 counter=counter,
+                language=word_language.lower(),
             )
             game.save()
             context = {"form": form, "game": game, "word": word_to_show}
@@ -53,8 +58,9 @@ def start(request):
 
 def game(request, game_id):
     game = get_object_or_404(Game, game_id=game_id)
+    LETTER_CHOICES = CYRILLIC_LETTERS if game.language == "ru" else LATIN_LETTERS
     if request.method == "POST":
-        form = GuessForm(request.POST)
+        form = GuessForm(LETTER_CHOICES, request.POST)
         if form.is_valid():
             game.current_guess = form.cleaned_data["current_guess"]
             game.tried_letters = "".join(set(game.tried_letters + game.current_guess))
@@ -70,11 +76,10 @@ def game(request, game_id):
                 return render(request, "gallows/gallows_gameover.html")
 
             game.save()
-            form = GuessForm()
             context = {"form": form, "game": game, "word": word_to_show}
             return render(request, "gallows/gallows_game.html", context)
         return render(
             request, "gallows/gallows_game.html", {"form": form, "game": game}
         )
-    form = GuessForm()
+    form = GuessForm(LETTER_CHOICES)
     return render(request, "gallows/gallows_game.html", {"form": form, "game": game})
