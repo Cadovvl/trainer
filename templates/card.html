@@ -2,7 +2,7 @@
   <div class="row no-gutters">
     <div class="col-md-4">
       {% load static %}
-      <img src="{{ img }}" class="card-img" alt="...">
+      <img src="{% get_static_prefix %}img/icons/{{ img }}" class="card-img" alt="...">
     </div>
     <div class="col-md-8">
       <div class="card-body">
