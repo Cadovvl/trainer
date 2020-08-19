@@ -6,7 +6,7 @@ from .models import Game
 
 
 class SettingsForm(forms.Form):
-    DIFFICULTIES = [("e", "Easy"), ("n", "Normal"), ("h", "Hard")]
+    DIFFICULTIES = [("easy", "Easy"), ("normal", "Normal"), ("hard", "Hard")]
     difficulty = forms.ChoiceField(
         label="Выберите уровень сложности", choices=DIFFICULTIES
     )

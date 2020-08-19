@@ -11,7 +11,7 @@ class Word(models.Model):
         RU = 'RU'  # Russian
         NO = 'NO'  # Norwegian
 
-    word = models.CharField(max_length=200)
+    word = models.CharField(max_length=200, db_column='word')
     lang = models.CharField(max_length=2, choices=Language.choices)
 
 
