@@ -76,12 +76,10 @@ def game(request, game_id):
             game.tried_letters = "".join(set(game.tried_letters + current_guess))
             game.counter -= 1
             word_to_show = mask_word(game.word_to_guess, game.tried_letters)
+            game.save()
             if "*" not in word_to_show:
-                game.delete()
                 return render(request, "gallows/gallows_win.html")
             if game.counter < 0:
-                game.delete()
                 return render(request, "gallows/gallows_gameover.html")
-            game.save()
     context = {"form": form, "game": game, "word": word_to_show}
     return render(request, "gallows/gallows_game.html", context)
