@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid" align="center">
+        <div class="row">
+            <div class="col-md-5">
+                <h3>Вам повезло!</h3>
+                <div class="col-md-6 offset-md-4">
+                    <form action="{% url 'gallows_start' %}">
+                        <button type="submit" class="btn btn-primary">
+                            Еще разок!
+                        </button>
+                    </form>
+                    <form action="{% url 'main_page' %}">
+                        <button type="submit" class="btn btn-primary">
+                            На выход
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <img class="img-fluid rounded mb-3 mb-md-0" src="{% static 'img/gallows.jpg' %}" alt="">
+            </div>
+        </div>
+    </div>
+{% endblock %}
