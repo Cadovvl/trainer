@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+
+
+<div class="container">
+<div class="row">
+<div class="col"></div>
+<div class="col">
+
+<h1>Sign up</h1>
+
+
+{% for error in form.errors %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endfor %}
+
+<form method="post">
+  {% csrf_token %}
+
+    {% for field in form %}
+    <div class="form-group row" aria-required={% if field.field.required %}"true"{% else %}"false"{% endif %}>
+
+      <div class="input-group mb-3 justify-content-end">
+        <div class="input-group-prepend">
+            <span for="{{ field.id_for_label }}" class="input-group-text" id="inputGroup-sizing-default">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</span>
+         </div>
+          {{ field }}
+      </div>
+
+        {% if form.errors %}
+        {% if field.help_text %}
+        <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+        {% endif %}
+        {% endif %}
+
+    </div>
+    {% endfor %}
+
+    <div class="text-md-right">
+        <button type="submit" class="btn btn-dark">
+            Sign up
+        </button>
+    </div>
+
+</form>
+
+</div>
+<div class="col"></div>
+</div>
+</div>
+
+{% endblock %}

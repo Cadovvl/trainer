@@ -18,6 +18,20 @@
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">My Profile</a>
       </li>
     </ul>
+    <ul class="navbar-nav ml-auto">
+
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="btn btn-outline-success" type="button" href="{% url 'profile' %}">Profile</a>
+        <a class="btn btn-outline-secondary" type="button" href="{% url 'logout' %}">Log Out</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="btn btn-outline-success" type="button" href="{% url 'login' %}">Sign In</a>
+        <a class="btn btn-outline-secondary" type="button" href="{% url 'signup' %}">Sign Up</a>
+      </li>
+      {% endif %}
+    </ul>
   </div>
 </nav>
 <div style="margin-top: 56px"></div>
