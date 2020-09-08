@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}User Profile{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+
+<div class="container">
+  <div class="row">
+    <div class="col"></div>
+
+    <div class="col">
+
+      <h1 class="text-center">Profile</h1>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+        </div>
+        <input type="text" class="form-control" disabled="disabled" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+        value="{{ user.username  }}">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">First name</span>
+        </div>
+        <input type="text" class="form-control" disabled="disabled" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+        value="{{ user.first_name  }}">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Last Name</span>
+        </div>
+        <input type="text" class="form-control" disabled="disabled" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+        value="{{ user.last_name }}">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">email</span>
+        </div>
+        <input type="text" class="form-control" disabled="disabled" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+        value="{{ user.email  }}">
+      </div>
+
+    </div>
+
+    <div class="col"></div>
+  </div>
+</div>
+
+{% else %}
+<div class="alert alert-danger text-center" role="alert">
+  Login to see this page
+</div>
+{% endif %}
+{% endblock %}
