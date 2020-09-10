@@ -1,6 +1,8 @@
 from django.db import models
 
 from users.models import CustomUser
+from translations.models import Translation, Word
+from translations.db_adapter import translate
 
 
 class Task(models.Model):
@@ -14,29 +16,40 @@ class Task(models.Model):
     status = models.BooleanField(
         default=False,
         verbose_name="Статус задания",
-        help_text="Статус выполнения задания"
+        help_text="Статус выполнения задания",
     )
     assessment = models.BooleanField(
         verbose_name="Оценка",
-        help_text="Оценка правильности выполнения задания"
+        help_text="Оценка правильности выполнения задания",
+        null=True,
+        blank=True,
     )
-    
-
-    def __str__(self):
-        return self.taskword
 
 
 class Question(models.Model):
+    task = models.ForeignKey(
+        Task,
+        related_name="questions",
+        on_delete=models.CASCADE,
+        verbose_name="Задание",
+        help_text="Задание, содержащее слово",
+    )
     word = models.CharField(
         max_length=20,
         verbose_name="Слово для перевода",
         help_text="Слово для перевода",
     )
-    task = models.ForeignKey(
-        Task,
-        related_name='questions',
+
+
+class AnswerOptions(models.Model):
+    question = models.ForeignKey(
+        Question,
         on_delete=models.CASCADE,
-        verbose_name="Задание",
-        help_text="Задание, содержащее слово"
+        related_name="options",
+        verbose_name="Варианты ответа",
+        help_text="Варианты ответа на вопрос",
     )
-    answer_options = models.JSONField()
+    answer = models.CharField(max_length=20)
+    bait_1 = models.CharField(max_length=20)
+    bait_2 = models.CharField(max_length=20)
+    bait_3 = models.CharField(max_length=20)
