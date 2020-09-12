@@ -49,7 +49,7 @@ class AnswerOptions(models.Model):
         verbose_name="Варианты ответа",
         help_text="Варианты ответа на вопрос",
     )
-    answer = models.CharField(max_length=20)
-    bait_1 = models.CharField(max_length=20)
-    bait_2 = models.CharField(max_length=20)
-    bait_3 = models.CharField(max_length=20)
+    answer = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
+    bait_1 = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
+    bait_2 = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
+    bait_3 = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")

@@ -17,7 +17,7 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
             Word.objects.filter(lang=word_lang).exclude(word__in=used_words)
         ).word.lower()
         used_words.append(word_to_guess)
-        answer = translate(word_to_guess, translation_lang)
+        answer = Word.objects.get(word=translate(word_to_guess, translation_lang))
 
         baits = set()
         bait_pool = (
@@ -25,7 +25,7 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
             .exclude(word=answer)
         )
         while len(baits) < 3:
-            baits.add(random.choice(bait_pool).word.lower())
+            baits.add(random.choice(bait_pool))
 
         question = Question.objects.create(task=new_task, word=word_to_guess)
         options = AnswerOptions.objects.create(

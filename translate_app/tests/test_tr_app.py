@@ -30,7 +30,7 @@ def test_task_generate(database, user):
 
     options = question.options.get(id=1)
     assert options.question == question
-    assert options.answer == 'лук'
-    assert options.bait_1 != options.answer
-    assert options.bait_2 != options.answer
-    assert options.bait_3 != options.answer
+    assert options.answer.word == 'лук'
+    assert options.bait_1.word != options.answer.word
+    assert options.bait_2.word != options.answer.word
+    assert options.bait_3.word != options.answer.word
