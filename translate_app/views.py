@@ -22,7 +22,7 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
         baits = set()
         bait_pool = (
             Word.objects.filter(lang=translation_lang)
-            .exclude(word=answer)
+            .exclude(word=answer.word)
         )
         while len(baits) < 3:
             baits.add(random.choice(bait_pool))
