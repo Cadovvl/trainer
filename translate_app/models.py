@@ -1,8 +1,8 @@
 from django.db import models
 
-from users.models import CustomUser
-from translations.models import Translation, Word
 from translations.db_adapter import translate
+from translations.models import Translation, Word
+from users.models import CustomUser
 
 
 class Task(models.Model):
@@ -34,8 +34,10 @@ class Question(models.Model):
         verbose_name="Задание",
         help_text="Задание, содержащее слово",
     )
-    word = models.CharField(
-        max_length=20,
+    word = models.ForeignKey(
+        Word,
+        on_delete=models.CASCADE,
+        related_name="+",
         verbose_name="Слово для перевода",
         help_text="Слово для перевода",
     )
@@ -49,7 +51,15 @@ class AnswerOptions(models.Model):
         verbose_name="Варианты ответа",
         help_text="Варианты ответа на вопрос",
     )
-    answer = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
-    bait_1 = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
-    bait_2 = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
-    bait_3 = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="+")
+    answer = models.ForeignKey(
+        Word, on_delete=models.CASCADE, related_name="+"
+    )
+    bait_1 = models.ForeignKey(
+        Word, on_delete=models.CASCADE, related_name="+"
+    )
+    bait_2 = models.ForeignKey(
+        Word, on_delete=models.CASCADE, related_name="+"
+    )
+    bait_3 = models.ForeignKey(
+        Word, on_delete=models.CASCADE, related_name="+"
+    )

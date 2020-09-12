@@ -1,10 +1,11 @@
 import random
 
 from django.shortcuts import render
-from translations.models import Translation, Word
-from translations.db_adapter import translate
 
-from .models import AnswerOptions, Task, Question
+from translations.db_adapter import translate, translations
+from translations.models import Translation, Word
+
+from .models import AnswerOptions, Question, Task
 
 
 def generate_task(user, num_of_q, word_lang, translation_lang):
@@ -15,14 +16,13 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
     for i in range(num_of_q):
         word_to_guess = random.choice(
             Word.objects.filter(lang=word_lang).exclude(word__in=used_words)
-        ).word.lower()
+        )
         used_words.append(word_to_guess)
-        answer = Word.objects.get(word=translate(word_to_guess, translation_lang))
+        answer = random.choice(word_to_guess.targets.all()).source_word
 
         baits = set()
-        bait_pool = (
-            Word.objects.filter(lang=translation_lang)
-            .exclude(word=answer.word)
+        bait_pool = Word.objects.filter(lang=translation_lang).exclude(
+            word__in=translations(word_to_guess.word, translation_lang)
         )
         while len(baits) < 3:
             baits.add(random.choice(bait_pool))
