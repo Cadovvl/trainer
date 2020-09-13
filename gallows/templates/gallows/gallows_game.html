@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block additional_headers %}
+ <link rel="stylesheet" href="{% static 'gallows_styles/gallows.css' %}">
+{% endblock %}
+
 
 {% block content %}
   <div class="container-fluid" align="center">
@@ -8,23 +12,26 @@
       <div class="col-md-5">
         <h3>Виселица ждет тебя!</h3>
         <div class="col-md-6">
-          <p>{{ word }}</p>
+          <h1>{{ word }}</h1>
         </div>
         <div class="col-md-6">
-          <p>{{ game.counter }}</p>
+          <div class="mx-auto" style="width: 200px;">
+            <fieldset class="border border-dark" >
+              <p class="font-weight-bold">Осталось попыток</p>
+              <h2>{{ game.counter }}</h2>
+            </fieldset>
+          </div>
         </div>
         <form method="post" action="{% url 'gallows_game' game.game_id %}">
           {% csrf_token %}
-          <div class="form-group row">
-            <label class="col-md-4 col-form-label text-md-right">
-              {{ form.current_guess.label }}
-            </label>
-            <div class="col-md-6">
-              {{ form.current_guess }}
-            </div>
+          <div class="col-md-8 radio-toolbar">
+          {% for choice in form.current_guess %}
+            {{ choice.tag }}
+            <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+          {% endfor %}
           </div>
-          <div class="col-md-6 offset-md-4">
-            <button type="submit" class="btn btn-primary">
+          <div class="col-md-8">
+            <button type="submit" class="btn btn-secondary">
               Проверить!
             </button>
           </div>
