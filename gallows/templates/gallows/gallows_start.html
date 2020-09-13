@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block additional_headers %}
+ <link rel="stylesheet" href="{% static 'gallows_styles/gallows.css' %}">
+{% endblock %}
+
 {% block content %}
   <div class="container-fluid" align="center">
     <div class="row">
@@ -8,22 +12,22 @@
         <h3>Виселица ждет тебя!</h3>
         <form method="post" action="{% url 'gallows_start' %}">
           {% csrf_token %}
-          <div class="form-group row">
-            <label class="col-md-4 col-form-label text-md-right">
-              {{ form.difficulty.label }}
-            </label>
-            <div class="col-md-6">
-              {{ form.difficulty }}
-            </div>
-            <label class="col-md-4 col-form-label text-md-right">
-              {{ form.language.label }}
-            </label>
-            <div class="col-md-6">
-              {{ form.language }}
-            </div>
+          <div class="col-md-8 radio-toolbar">
+          {% for diff in form.difficulty %}
+            {{ diff.tag }}
+            <label for="{{ diff.id_for_label }}">{{ diff.choice_label }}</label>
+            {% endfor %}
           </div>
-          <div class="col-md-6 offset-md-4">
-            <button type="submit" class="btn btn-primary">
+
+          <div class="col-md-8 radio-toolbar">
+          {% for lang in form.language %}
+            {{ lang.tag }}
+            <label for="{{ lang.id_for_label }}">{{ lang.choice_label }}</label>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-8">
+            <button type="submit" class="btn btn-secondary">
               Погнали!
             </button>
           </div>

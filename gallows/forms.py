@@ -8,9 +8,11 @@ from .models import Game
 class SettingsForm(forms.Form):
     DIFFICULTIES = [("easy", "Easy"), ("normal", "Normal"), ("hard", "Hard")]
     difficulty = forms.ChoiceField(
-        label="Выберите уровень сложности", choices=DIFFICULTIES
+        widget=forms.RadioSelect,
+        label="Выберите уровень сложности",
+        choices=DIFFICULTIES
     )
-    language = forms.ChoiceField(label="Выберите язык", choices=Word.Language.choices)
+    language = forms.ChoiceField(widget=forms.RadioSelect, label="Выберите язык", choices=Word.Language.choices)
 
 
 class GuessForm(forms.Form):
