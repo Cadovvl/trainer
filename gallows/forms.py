@@ -14,7 +14,7 @@ class SettingsForm(forms.Form):
 
 
 class GuessForm(forms.Form):
-    current_guess = forms.ChoiceField(choices=[])
+    current_guess = forms.ChoiceField(widget=forms.RadioSelect, choices=[])
 
     def __init__(self, choices, *args, **kwargs):
         super(GuessForm, self).__init__(*args, **kwargs)
