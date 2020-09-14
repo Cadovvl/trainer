@@ -25,9 +25,31 @@
             <label for="{{ lang.id_for_label }}">{{ lang.choice_label }}</label>
             {% endfor %}
           </div>
-
-          <div class="col-md-8">
-            <button type="submit" class="btn btn-secondary">
+           <style> 
+            .button {
+            background-color: #1c87c9;
+            -webkit-border-radius: 60px;
+            border-radius: 60px;
+            border: none;
+            color: #eeeeee;
+            cursor: pointer;
+            display: inline-block;
+            font-family: sans-serif; 
+            font-size: 20px;
+            padding: 10px 10px;
+            text-align: center;
+            text-decoration: none;
+            }
+            @keyframes glowing {
+            0% { background-color: #a81805; box-shadow: 0 0 5px #a81805; }
+            50% { background-color: #f33f27; box-shadow: 0 0 20px #f33f27; }
+            100% { background-color: #a81805; box-shadow: 0 0 5px #a81805; }
+            }
+            .button {
+            animation: glowing 1300ms infinite;
+            }
+          </style>
+            <button type="submit" class="button">
               Погнали!
             </button>
           </div>
