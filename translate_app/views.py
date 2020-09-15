@@ -9,31 +9,39 @@ from .models import AnswerOptions, Question, Task
 
 
 def generate_task(user, num_of_q, word_lang, translation_lang):
-
     new_task = Task.objects.create(user=user)
-    used_words = []
 
-    for i in range(num_of_q):
-        word_to_guess = random.choice(
-            Word.objects.filter(lang=word_lang).exclude(word__in=used_words)
-        )
-        used_words.append(word_to_guess)
-        answer = random.choice(word_to_guess.targets.all()).source_word
+    word_pool = random.choices(
+        Translation.objects.select_related("source_word").filter(
+            source_word__lang=word_lang
+        ),
+        k=num_of_q
+    )
 
-        baits = set()
-        bait_pool = Word.objects.filter(lang=translation_lang).exclude(
-            word__in=translations(word_to_guess.word, translation_lang)
-        )
-        while len(baits) < 3:
-            baits.add(random.choice(bait_pool))
+    exceptions = []
+    for translation in word_pool:
+        for word in translations(
+            translation.source_word.word, translation_lang
+        ):
+            exceptions.append(word)
 
+    bait_pool = random.choices(
+        Word.objects.filter(lang=translation_lang).exclude(
+            word__in=exceptions
+        ),
+        k=num_of_q * 3,
+    )
+
+    for translation in word_pool:
+        word_to_guess = translation.source_word
+        answer = translation.target_word
         question = Question.objects.create(task=new_task, word=word_to_guess)
         options = AnswerOptions.objects.create(
             question=question,
             answer=answer,
-            bait_1=baits.pop(),
-            bait_2=baits.pop(),
-            bait_3=baits.pop(),
+            bait_1=bait_pool.pop(),
+            bait_2=bait_pool.pop(),
+            bait_3=bait_pool.pop(),
         )
     return new_task
 
