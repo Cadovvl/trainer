@@ -127,7 +127,9 @@ STATICFILES_DIRS = [
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-# LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = 'main_page' #redirect to named pattern
+LOGIN_URL = '/users/login/'
+
+LOGIN_REDIRECT_URL = 'main_page'
+
+LOGOUT_REDIRECT_URL = 'main_page'
 
