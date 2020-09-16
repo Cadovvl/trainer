@@ -11,11 +11,10 @@ from .models import AnswerOptions, Question, Task
 def generate_task(user, num_of_q, word_lang, translation_lang):
     new_task = Task.objects.create(user=user)
 
-    word_pool = random.choices(
-        Translation.objects.select_related("source_word").filter(
-            source_word__lang=word_lang
-        ),
-        k=num_of_q
+    word_pool = list(
+        Translation.objects.select_related("source_word")\
+        .filter(source_word__lang=word_lang)\
+        .order_by('?')[:num_of_q]
     )
 
     exceptions = []
@@ -25,11 +24,10 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
         ):
             exceptions.append(word)
 
-    bait_pool = random.choices(
-        Word.objects.filter(lang=translation_lang).exclude(
-            word__in=exceptions
-        ),
-        k=num_of_q * 3,
+    bait_pool = list(
+        Word.objects.filter(lang=translation_lang)\
+        .exclude(word__in=exceptions)\
+        .order_by("?")[:num_of_q*3]
     )
 
     for translation in word_pool:
