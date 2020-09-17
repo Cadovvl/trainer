@@ -26,7 +26,7 @@ def test_task_generate(database, user):
     assert question.task == new_task
     assert question.word.word == "onion"
 
-    options = question.options.get(id=1)
+    options = question.options
     assert options.question == question
     assert options.answer.word == "лук"
     assert options.bait_1.word not in translations(

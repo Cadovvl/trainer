@@ -41,10 +41,21 @@ class Question(models.Model):
         verbose_name="Слово для перевода",
         help_text="Слово для перевода",
     )
+    status = models.BooleanField(
+        default=False,
+        verbose_name="Статус",
+        help_text="Статус ответа на вопрос",
+    )
+    assessment = models.BooleanField(
+        verbose_name="Оценка",
+        help_text="Оценка правильности ответа на вопрос",
+        null=True,
+        blank=True,
+    )
 
 
 class AnswerOptions(models.Model):
-    question = models.ForeignKey(
+    question = models.OneToOneField(
         Question,
         on_delete=models.CASCADE,
         related_name="options",
