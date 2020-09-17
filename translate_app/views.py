@@ -19,7 +19,7 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
         ),
         num_of_q,
     )
-    word_pool = Translation.objects.filter(id__in=random_id_word)
+    word_pool = list(Translation.objects.filter(id__in=random_id_word))
 
     exceptions = []
     for translation in word_pool:
