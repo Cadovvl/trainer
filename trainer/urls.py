@@ -25,5 +25,6 @@ urlpatterns = [
     path('gallows/', include("gallows.urls")),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
+    path('translate/', include("translate_app.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

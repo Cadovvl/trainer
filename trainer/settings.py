@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'translations',
     'gallows',
     'users',
+    'translate_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
