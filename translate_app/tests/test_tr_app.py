@@ -24,23 +24,13 @@ def test_task_generate(database, user, task):
     options = question.options
     assert options.question == question
     assert options.answer.word == "лук"
-    assert options.bait_1.word not in translations(
-        options.answer.word, "RU"
-    )
-    assert options.bait_2.word not in translations(
-        options.answer.word, "RU"
-    )
-    assert options.bait_3.word not in translations(
-        options.answer.word, "RU"
-    )
+    assert options.bait_1.word not in translations(options.answer.word, "RU")
+    assert options.bait_2.word not in translations(options.answer.word, "RU")
+    assert options.bait_3.word not in translations(options.answer.word, "RU")
 
 
 @pytest.mark.django_db(transaction=True)
 @pytest.mark.skip
 def test_task_answer(database, user, user_client, task):
-    url = reverse('translate_task', args=[task.id])
-    response = user_client.post(
-        url,
-        {"answer": "onion"},
-        follow=True,
-    )
+    url = reverse("translate_task", args=[task.id])
+    response = user_client.post(url, {"answer": "onion"}, follow=True,)

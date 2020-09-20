@@ -11,6 +11,7 @@ from .models import AnswerOptions, Question, Task
 
 NUMBER_OF_QUESTIONS = 1
 
+
 @transaction.atomic
 def generate_task(user, num_of_q, word_lang, translation_lang):
     new_task = Task.objects.create(user=user)
@@ -26,9 +27,10 @@ def generate_task(user, num_of_q, word_lang, translation_lang):
     word_pool = list(Translation.objects.filter(id__in=random_id_word))
 
     source_words = [translation.source_word.word for translation in word_pool]
-    targets = list(Translation.objects.filter(
+    targets = list(
+        Translation.objects.filter(
             source_word__word__in=source_words,
-            target_word__lang=translation_lang
+            target_word__lang=translation_lang,
         )
     )
     exceptions = [translation.target_word.word for translation in targets]
@@ -72,6 +74,7 @@ def answer_options(question):
     random.shuffle(options)
     return [(key, key) for key in options]
 
+
 @login_required
 def start(request):
     form = SettingsForm(request.POST or None)
@@ -91,6 +94,7 @@ def start(request):
     return render(
         request, "translate_app/translate_initial.html", {"form": form}
     )
+
 
 @login_required
 def translatetask(request, task_id):
@@ -114,6 +118,7 @@ def translatetask(request, task_id):
         "translate_app/translate_task.html",
         {"form": form, "task": task, "question": question},
     )
+
 
 @login_required
 def result(request, task_id):

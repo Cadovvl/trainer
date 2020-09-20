@@ -4,6 +4,7 @@ from translate_app.views import generate_task
 from translations.models import Translation, Word
 
 from .fixture_user import user
+
 Lang = Word.Language
 
 
@@ -33,6 +34,7 @@ def database():
     )
 
     return words
+
 
 @pytest.fixture
 def task(database, user):
