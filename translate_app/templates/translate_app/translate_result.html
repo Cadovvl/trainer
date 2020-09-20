@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row" align="center">
+      <div class="col-md-12">
+        <h2>Your results</h2>
+      </div>
+    </div>
+    <div class="row" align="left">
+      <div class="col-md-6">
+        <p>Mistakes done: {{ wrong_count }}</p>
+      </div>
+    </div>
+    
+    <div class="col-md-6 offset-md-4">
+      <form action="{% url 'translate' %}">
+        <button type="submit" class="btn btn-primary">
+          Еще разок!
+        </button>
+      </form>
+      <form action="{% url 'main_page' %}">
+        <button type="submit" class="btn btn-primary">
+          На выход
+        </button>
+      </form>
+    </div>
+
+  </div>
+{% endblock %}
