@@ -90,7 +90,7 @@ def start(request):
             )
         except IndexError as e:
             return render(request, "translate_app/translate_taskerror.html")
-        return redirect("translate_task", task_id=new_task.id)
+        return redirect("give_question", task_id=new_task.id)
     return render(
         request, "translate_app/translate_initial.html", {"form": form}
     )
@@ -98,7 +98,7 @@ def start(request):
 
 @transaction.atomic
 @login_required
-def translatetask(request, task_id):
+def give_question(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     if task.status == True:
         return redirect("translate_result", task_id=task_id)
@@ -107,7 +107,18 @@ def translatetask(request, task_id):
     question.sort(key=lambda x:x.id) 
     question = question[0]
 
-    form = AnswerForm(answer_options(question), request.POST or None)
+    form = AnswerForm(answer_options(question))
+    return render(
+        request,
+        "translate_app/translate_question.html",
+        {"form": form, "task": task, "question": question},
+    )
+
+
+def process_answer(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    task = question.task
+    form = AnswerForm(answer_options(question), request.POST)
     if form.is_valid():
         answer = form.cleaned_data["answer"]
         question.status = True
@@ -117,13 +128,8 @@ def translatetask(request, task_id):
         question.save()
         task.status = task_status_check(task)
         task.save()
-        return redirect("translate_task", task_id=task.id)
-    return render(
-        request,
-        "translate_app/translate_task.html",
-        {"form": form, "task": task, "question": question},
-    )
-
+        return redirect("give_question", task_id=task.id)
+    
 
 @login_required
 def result(request, task_id):
