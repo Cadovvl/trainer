@@ -9,7 +9,7 @@ from translations.models import Translation, Word
 from .forms import AnswerForm, SettingsForm
 from .models import AnswerOptions, Question, Task
 
-NUMBER_OF_QUESTIONS = 1
+NUMBER_OF_QUESTIONS = 2
 
 
 @transaction.atomic
@@ -96,12 +96,17 @@ def start(request):
     )
 
 
+@transaction.atomic
 @login_required
 def translatetask(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     if task.status == True:
         return redirect("translate_result", task_id=task_id)
-    question = random.choice(task.questions.filter(status=False))
+
+    question = list(task.questions.filter(status=False))
+    question.sort(key=lambda x:x.id) 
+    question = question[0]
+
     form = AnswerForm(answer_options(question), request.POST or None)
     if form.is_valid():
         answer = form.cleaned_data["answer"]
