@@ -96,7 +96,6 @@ def start(request):
     )
 
 
-@transaction.atomic
 @login_required
 def give_question(request, task_id):
     task = get_object_or_404(Task, id=task_id)
@@ -114,7 +113,8 @@ def give_question(request, task_id):
         {"form": form, "task": task, "question": question},
     )
 
-
+@transaction.atomic
+@login_required
 def process_answer(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     task = question.task
