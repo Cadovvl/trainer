@@ -20,7 +20,6 @@ def database():
 
     words = Word.objects.all()
 
-    print([i.__dict__ for i in words])
     translations = Translation.objects.bulk_create([
         Translation(source_word=words[0], target_word=words[1], priority=10),
         Translation(source_word=words[0], target_word=words[2], priority=5),
@@ -59,7 +58,6 @@ def test_translations(database):
     assert translations('поклон', Lang.EN) == []
     assert translations('нос', Lang.EN) == []
     assert translations('несуществую', Lang.EN) == []
-
 
 @pytest.mark.django_db
 def test_unique_word_constraint(database):
