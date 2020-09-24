@@ -1,7 +1,10 @@
 import pytest
+from django.db import IntegrityError, transaction
 
 from translations.db_adapter import translate, translations
 from translations.models import Translation, Word
+
+from django.db.models import Q
 
 Lang = Word.Language
 
@@ -55,3 +58,20 @@ def test_translations(database):
     assert translations('поклон', Lang.EN) == []
     assert translations('нос', Lang.EN) == []
     assert translations('несуществую', Lang.EN) == []
+
+@pytest.mark.django_db
+def test_unique_word_constraint(database):
+    with pytest.raises(IntegrityError):
+        with transaction.atomic():
+            Word.objects.create(word='лук', lang=Lang.RU)
+    assert 1 == len(Word.objects.filter(Q(word='лук') & Q(lang=Lang.RU)).all())
+
+    with pytest.raises(IntegrityError):
+        with transaction.atomic():
+            w1 = Word.objects.filter(Q(word='onion') & Q(lang=Lang.EN)).first()
+            w2 = Word.objects.filter(Q(word='лук') & Q(lang=Lang.RU)).first()
+            Translation.objects.create(source_word=w1, target_word=w2, priority=100500)
+
+    assert translations('onion', Lang.RU) == ['лук']
+
+
