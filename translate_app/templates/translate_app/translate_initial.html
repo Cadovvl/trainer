@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row" align="center">
+      <div class="col-md-12">
+        <h2>Introduction</h2>
+      </div>
+    </div>
+    <div class="row" align="left">
+      <div class="col-md-6">
+        <p>You will be given a set of 10 words to choose a translation for.</p>
+        <p>At the end you'll get the assessment with correct answers if any mistakes would present.</p><br>
+        <p>Select source and target languages:</p>
+      </div>
+    </div>
+
+    {% for error in form.non_field_errors%}
+      <div class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+    {% endfor %}
+
+    <form method="post" action="{% url 'translate' %}">
+      {% csrf_token %}
+      <div class="form-group row">
+        <label class="col-md-4 col-form-label text-md-right">
+          {{ form.source_language.label }}
+        </label>
+        <div class="col-md-6">
+          {{ form.source_language }}
+        </div>
+        <label class="col-md-4 col-form-label text-md-right">
+          {{ form.target_language.label }}
+        </label>
+        <div class="col-md-6">
+          {{ form.target_language }}
+        </div>
+      </div>
+      <div class="col-md-6 offset-md-4">
+        <button type="submit" class="btn btn-primary">
+          Начать!
+        </button>
+      </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,6 +1,9 @@
 import pytest
 
+from translate_app.views import generate_task
 from translations.models import Translation, Word
+
+from .fixture_user import user
 
 Lang = Word.Language
 
@@ -31,3 +34,12 @@ def database():
     )
 
     return words
+
+
+@pytest.fixture
+def task(database, user):
+    num_of_q = 1
+    word_lang = "EN"
+    translation_lang = "RU"
+    new_task = generate_task(user, num_of_q, word_lang, translation_lang)
+    return new_task
