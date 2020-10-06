@@ -52,3 +52,19 @@
   50% { background-color: #f33f27; box-shadow: 0 0 20px #f33f27; }
   100% { background-color: #a81805; box-shadow: 0 0 5px #a81805; }
 }
+
+.button {
+  width: 130px;
+  height: 40px;
+  padding-top: 10px;
+  box-sizing: border-box;
+  border: 1px solid white;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.button:hover {
+  opacity: 0.5;
+}
